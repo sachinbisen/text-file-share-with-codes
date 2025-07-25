@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+<meta charset="UTF-8">
+<title>ClipVault</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+tailwind.config = {
+darkMode: 'class',
+theme: {
+extend: {
+colors: {
+dark: {
+800: '#1e293b',
+900: '#0f172a',
+}
+}
+}
+}
+}
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-100 transition-colors duration-300 min-h-screen font-['Inter']">
+
+<div class="max-w-2xl mx-auto p-6 space-y-8">
+
+<div class="flex items-center justify-between mb-6">
+<h1 class="text-4xl font-bold head flex items-center gap-2">
+<!-- <span>📋</span> -->
+<span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ClipVault</span>
+</h1>
+
+
+</div>
+
+<!-- Introduction / Hero Section -->
+<section class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all hover:shadow-xl">
+<h2 class="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Welcome to ClipVault</h2>
+<p class="text-gray-700 dark:text-gray-300 mb-4">
+ClipVault makes it easy to securely share text and files using a temporary code. Perfect for quick, private sharing between devices or people.
+</p>
+<ul class="list-disc pl-5 text-gray-700 dark:text-gray-300 space-y-2">
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Type or paste your message.</li>
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Attach files if needed.</li>
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Set how many people can access it.</li>
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Set expiry time (in minutes).</li>
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Click <strong class="font-semibold">Share</strong> to get a 4-digit code.</li>
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> On another device, enter the code to <strong class="font-semibold">Receive</strong>.</li>
+</ul>
+<p class="mt-4 text-sm italic text-gray-500 dark:text-gray-400">
+Secure. Simple. Efficient.
+</p>
+</section>
+
+<!-- Send Section -->
+<section class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all hover:shadow-xl">
+<h2 class="text-xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Send</h2>
+
+<textarea id="textInput" placeholder="Type text here..."
+class="border-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-3 w-full mb-4 rounded-lg resize-none h-32 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all"></textarea>
+
+<div class="mb-4">
+<label for="fileInput" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Choose Files</label>
+<input type="file" id="fileInput" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-gray-600 dark:file:text-gray-100 dark:hover:file:bg-gray-500 transition-all" multiple>
+</div>
+
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div>
+<label for="receiverInput" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Max receivers</label>
+<input type="number" id="receiverInput" placeholder="Default: 1" min="1"
+class="border-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-3 w-full rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all">
+</div>
+<div>
+<label for="expiryInput" class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Expiry (minutes)</label>
+<input type="number" id="expiryInput" placeholder="Default: 10" min="1"
+class="border-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-3 w-full rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all">
+</div>
+</div>
+
+<button onclick="sendData()"
+class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-lg font-semibold tracking-wide transition-all duration-200 shadow hover:shadow-lg transform hover:scale-[1.01]">
+Share
+</button>
+
+<div id="sendLoading" class="hidden mt-4 text-center">
+<div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+<p class="mt-2 text-gray-600 dark:text-gray-400">Processing...</p>
+</div>
+
+<p id="sendResult" class="mt-4 font-mono break-all text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-gray-700 p-3 rounded-lg hidden"></p>
+</section>
+
+<!-- Receive Section -->
+<section class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all hover:shadow-xl">
+<h2 class="text-xl font-semibold mb-4 text-green-600 dark:text-green-400">Receive</h2>
+<input id="codeInput" placeholder="Enter 4-digit code" maxlength="4"
+class="border-2 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-3 w-full mb-4 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 dark:focus:ring-green-800 transition-all">
+<button onclick="receiveData()"
+class="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white py-3 rounded-lg font-semibold tracking-wide transition-all duration-200 shadow hover:shadow-lg transform hover:scale-[1.01]">
+Receive
+</button>
+
+<p id="receiveResult" class="mt-4 text-red-500 dark:text-red-400 font-bold"></p>
+
+<!-- Files First -->
+<div id="filesBlock" class="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg hidden transition-all">
+<h3 class="text-lg font-semibold mb-2">Shared Files:</h3>
+<div id="fileLinks" class="space-y-2"></div>
+</div>
+
+<!-- Then Text -->
+<div id="textBlock" class="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg hidden transition-all">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-lg font-semibold">Shared Text:</h3>
+<button onclick="copyReceivedText()" class="text-sm bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 px-3 py-1 rounded transition-all">Copy Text</button>
+</div>
+<p id="receivedText" class="font-mono break-words bg-white dark:bg-gray-800 p-3 rounded"></p>
+</div>
+</section>
+
+<!-- About Section -->
+<section class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all hover:shadow-xl">
+<h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+<!-- <span>🔒</span> -->
+<span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">About ClipVault</span>
+</h2>
+<p class="text-gray-700 dark:text-gray-300 mb-3">
+We value your privacy. Your data is:
+</p>
+<ul class="list-disc pl-5 text-gray-700 dark:text-gray-300 space-y-2">
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Transferred securely using HTTPS.</li>
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Stored temporarily and automatically deleted after expiry.</li>
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Accessible only using the private 4-digit code.</li>
+<li class="flex items-start gap-2"><span class="text-blue-500">*</span> Never used for analytics, tracking, or ads.</li>
+</ul>
+<p class="mt-4 text-sm italic text-gray-500 dark:text-gray-400">
+Your trust is our priority.
+</p>
+</section>
+</div>
+<div id="toast"
+class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-xl opacity-0 transition-all duration-300 flex items-center gap-2">
+<span id="toast-icon">✅</span>
+<span id="toast-message"></span>
+</div>
+
+<script src="script.js"></script>
+</body>
+
+</html>
